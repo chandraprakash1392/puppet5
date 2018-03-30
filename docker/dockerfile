@@ -1,0 +1,17 @@
+FROM ubuntu:latest
+
+RUN apt-get update
+RUN apt-get install wget -y
+RUN wget https://apt.puppetlabs.com/puppet5-release-xenial.deb
+RUN dpkg -i puppet5-release-xenial.deb
+RUN apt-get update -y
+RUN apt-get install puppetserver -y
+RUN apt-get remove wget -y
+RUN apt autoremove -y
+
+COPY docker-entrypoint.sh /
+COPY initscript /lib/systemd/system/puppetserver.service
+RUN chmod 755 /lib/systemd/system/puppetserver.service
+RUN chmod 755 /docker-entrypoint.sh
+
+ENTRYPOINT /docker-entrypoint.sh
